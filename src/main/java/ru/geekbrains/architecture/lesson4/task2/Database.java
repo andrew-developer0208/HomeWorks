@@ -5,32 +5,6 @@ import java.util.Collection;
 
 public class Database implements DatabaseController{
 
-    private static int counter = 100;
-
-    private Collection<Ticket> tickets = new ArrayList<>();
-    private Collection<Customer> customers = new ArrayList<>();
-
-
-    //region Constructors
-
-    public Database(){
-
-        Customer customer1 = new Customer();
-        Ticket ticket1 = new Ticket();
-        Ticket ticket2 = new Ticket();
-        Ticket ticket3 = new Ticket();
-        customer1.getTickets().add(ticket1);
-        customer1.getTickets().add(ticket2);
-        customer1.getTickets().add(ticket3);
-        tickets.add(ticket1);
-        tickets.add(ticket2);
-        tickets.add(ticket3);
-        customers.add(customer1);
-
-    }
-
-    //endregion
-
 
     /**
      * Возвращает ссылку на базу данных билетов
@@ -64,4 +38,33 @@ public class Database implements DatabaseController{
     public int createTicketOrder(int clientId){
         return ++counter;
     }
+
+    //region Fields
+
+    private static int counter = 100;
+    private Collection<Ticket> tickets = new ArrayList<>();
+    private Collection<Customer> customers = new ArrayList<>();
+
+    //endregion
+
+    //region Constructors
+
+    public Database(){
+
+        Customer customer1 = new Customer();
+        Ticket ticket1 = TicketFactory.createTicket(customer1.getId());
+        Ticket ticket2 = TicketFactory.createTicket(customer1.getId());
+        Ticket ticket3 = TicketFactory.createTicket(customer1.getId());
+        customer1.getTickets().add(ticket1);
+        customer1.getTickets().add(ticket2);
+        customer1.getTickets().add(ticket3);
+        tickets.add(ticket1);
+        tickets.add(ticket2);
+        tickets.add(ticket3);
+        customers.add(customer1);
+
+    }
+
+    //endregion
+
 }

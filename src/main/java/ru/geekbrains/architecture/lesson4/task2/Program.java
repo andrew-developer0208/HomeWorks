@@ -11,18 +11,20 @@ public class Program {
      */
     public static void main(String[] args) {
 
-        Core core = new Core();
+        //Создаём демо-базу данных
+        DatabaseController demobase = new Database();
 
-        MobileApp mobileApp = new MobileApp(core.getTicketProvider(), core.getCustomerProvider());
+        for (Customer customer: demobase.getCustomers()) {
+            System.out.println(customer);
+            for (Ticket ticket: customer.getTickets()) {
+                System.out.println(ticket);
+            }
+        }
+        System.out.println();
 
-        BusStation busStation = new BusStation(core.getTicketProvider());
-
-
-        mobileApp.buyTicket("1000000000001");
-        mobileApp.searchTicket(new Date());
-        Collection<Ticket> tickets = mobileApp.getTickets();
-
-        busStation.checkTicket("AAA");
+        PaymentController paymentProvider = new PaymentProvider();
+        TicketController ticketProvider = new TicketProvider(demobase, paymentProvider);
+        ticketProvider.buyTicket(101, "1111 2222 3333 4444");
 
 
     }

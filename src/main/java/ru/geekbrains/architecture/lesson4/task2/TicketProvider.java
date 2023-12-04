@@ -4,22 +4,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 
-public class TicketProvider {
+public class TicketProvider implements TicketController{
 
-    private final DatabaseController database;
-    private final PaymentProvider paymentProvider;
-
-    //region Constructors
-
-    public TicketProvider(
-            DatabaseController database,
-            PaymentProvider paymentProvider
-    ){
-        this.database = database;
-        this.paymentProvider = paymentProvider;
-    }
-
-    //endregion
 
     /**
      * Ищет в базе данных билет, соответствующий переданным параметрам
@@ -66,5 +52,24 @@ public class TicketProvider {
         }
         return false;
     }
+
+    //region FIelds
+
+    private final DatabaseController database;
+    private final PaymentController paymentProvider;
+
+    //endregion
+
+    //region Constructors
+
+    public TicketProvider(
+            DatabaseController database,
+            PaymentController paymentProvider
+    ){
+        this.database = database;
+        this.paymentProvider = paymentProvider;
+    }
+
+    //endregion
 
 }

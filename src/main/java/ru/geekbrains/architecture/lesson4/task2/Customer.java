@@ -5,9 +5,13 @@ import java.util.Collection;
 
 public class Customer {
 
+    //region Fields
+
     private static int counter = 100;
     private int id;
     private Collection<Ticket> tickets = new ArrayList<>();
+
+    //endregion
 
     //region Constructors
 
@@ -38,4 +42,11 @@ public class Customer {
     //endregion
 
 
+    /**
+     * Returns a string representation of the object.
+     */
+    @Override
+    public String toString() {
+        return String.format("id: %d name: %s", id, this.getClass().getSimpleName());
+    }
 }
