@@ -63,7 +63,7 @@ public class Program {
         int current;
         File[] files = dir.listFiles();
         File backupPath;
-        Path backupDirectory = Files.createDirectories(Paths.get("backup"));
+        Path backupDirectory = Files.createDirectories(Paths.get("./backup"));
 
         if (files == null) return false;
         for (File file: files) {
