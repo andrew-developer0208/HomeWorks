@@ -1,4 +1,4 @@
-package ru.geekbrains.jdk.chat.server;
+package ru.geekbrains.jdk.chat.db;
 
 import java.io.File;
 import java.util.List;

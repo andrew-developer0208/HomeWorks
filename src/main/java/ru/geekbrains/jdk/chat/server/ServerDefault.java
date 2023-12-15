@@ -1,17 +1,17 @@
 package ru.geekbrains.jdk.chat.server;
 
 import ru.geekbrains.jdk.chat.client.Client;
+import ru.geekbrains.jdk.chat.db.DataController;
+import ru.geekbrains.jdk.chat.db.DataControllerDefault;
+import ru.geekbrains.jdk.chat.db.UsersController;
+import ru.geekbrains.jdk.chat.db.UsersControllerDefault;
 
-import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 
 public class ServerDefault implements Server{
 
-    private List<String> messages;
-    private List<Client> clients;
-    private IOController ioController;
-    private File logFile;
+    private UsersController users;
+    private DataController messages;
     private ServerView view;
     private boolean status;
 
@@ -20,11 +20,9 @@ public class ServerDefault implements Server{
      */
     public ServerDefault(ServerView view) {
         this.view = view;
-        clients = new ArrayList<>();
-        messages = new ArrayList<>();
         status =false;
-        ioController = new IOControllerDefault();
-        logFile = new File("./log.txt");
+        messages = new DataControllerDefault();
+        users = new UsersControllerDefault();
     }
 
     /**
@@ -34,7 +32,7 @@ public class ServerDefault implements Server{
      */
     @Override
     public List<String> getHistory() {
-        return messages;
+        return messages.getAll();
     }
 
     /**
@@ -46,9 +44,8 @@ public class ServerDefault implements Server{
     public void receiveMessage(String message) {
         broadcastMessage(message);
         view.showOnWindow(message);
-        messages.add(message);
-        ioController.writeFile(messages, logFile);
-
+        messages.addMessage(message);
+        messages.saveChanges();
     }
 
     /**
@@ -56,8 +53,9 @@ public class ServerDefault implements Server{
      * @param message сообщение
      */
     private void broadcastMessage(String message) {
-        if (!clients.isEmpty()) {
-            clients.forEach(x -> x.answerFromServer(message));
+        List<Client> list = users.getAll();
+        if (!list.isEmpty()) {
+            list.forEach(x -> x.answerFromServer(message));
         }
     }
 
@@ -70,7 +68,7 @@ public class ServerDefault implements Server{
     @Override
     public boolean connectUser(Client client) {
         if (status) {
-            clients.add(client);
+            users.addUser(client);
             view.showOnWindow(String.format("Server: %s присоединился к чату", client.getLogin()));
             broadcastMessage(String.format("Server: %s присоединился к чату", client.getLogin()));
             return true;
@@ -86,7 +84,7 @@ public class ServerDefault implements Server{
      */
     @Override
     public void disconnectUser(Client client) {
-        clients.remove(client);
+        users.removeUser(client);
     }
 
     /**
@@ -94,7 +92,7 @@ public class ServerDefault implements Server{
      */
     @Override
     public void startServer() {
-        if (logFile.exists()) {
+        if (!messages.getAll().isEmpty()) {
             loadMessages();
         } else {
             view.showOnWindow("История чата пуста");
@@ -110,8 +108,8 @@ public class ServerDefault implements Server{
     public void stopServer() {
         broadcastMessage("Server: Сервер остановлен.");
 
-        while (!clients.isEmpty()) {
-            clients.get(0).disconnectFromServer();
+        while (!users.getAll().isEmpty()) {
+            users.getUser(0).disconnectFromServer();
         }
         status = false;
     }
@@ -130,9 +128,9 @@ public class ServerDefault implements Server{
      * Обнавляет чат
      */
     private void loadMessages() {
-        messages = ioController.readFile(logFile);
-        for (int i = 0; i < messages.size(); i++) {
-            view.showOnWindow(messages.get(i));
+        List<String> list = messages.getAll();
+        for (String s : list) {
+            view.showOnWindow(s);
         }
     }
 }
