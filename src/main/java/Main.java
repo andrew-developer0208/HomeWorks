@@ -7,6 +7,7 @@ public class Main {
      * @param args arguments
      */
     public static void main(String[] args) {
+        System.out.println("Hello from Ubuntu");
         Calculator calculator = new Calculator();
         calculator.addNumbers(2, 23);
         calculator.diffNumbers(10, 7);

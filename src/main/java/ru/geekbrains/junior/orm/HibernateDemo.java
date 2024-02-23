@@ -30,8 +30,6 @@ public class HibernateDemo {
 
         session.beginTransaction();
 
-//        Magic magic = new Magic("Волшебная стрела", 300, 1000);
-//        session.save(magic);
 
         Magic magic = new Magic("Жажда крови", 100, 500);
         session.save(magic);
